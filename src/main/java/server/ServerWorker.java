@@ -11,7 +11,7 @@ public class ServerWorker extends Thread {
 
     private final Socket clientSocket;
     private final Server server;
-    private String login = null;
+    private String login = null; //tænker vi skal bruge login og validerer brugeren. men behøves ikke instanitieres i konstruktøren
     private OutputStream outputStream;
 
     public ServerWorker(Server server, Socket clientSocket) {
