@@ -26,4 +26,8 @@ public class ServerWorker extends Thread {
 
     private void handleClientSocket() {
     }
+
+    private void handleConnect(){
+
+    }
 }
