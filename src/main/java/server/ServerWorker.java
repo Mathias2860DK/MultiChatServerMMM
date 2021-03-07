@@ -38,6 +38,7 @@ public class ServerWorker extends Thread {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         String line;
+        //TODO: you must be connected to acces commands.
         while ((line = reader.readLine()) != null){
             String [] input = line.split("#");
             if ("CONNECT".equals(input[0])){
