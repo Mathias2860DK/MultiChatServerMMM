@@ -21,3 +21,12 @@ Everytime a client sends a message the server adds MESSAGE --> MESSAGE#<User>#te
 1 illegal input was received --> CLOSE#1
 2 User not found --> CLOSE#2
 When a close command is sent the server should close the connection and release all resources attached to that client.
+
+Things to consider:
+
+You can send messages to people that are not online --> check if user is online when send message?
+You can connect to another user when already logged in
+If user logs off by closing the window, the other users will not be notified
+User will not be notified if they type an unknown command
+There are no log-file to hold information
+
