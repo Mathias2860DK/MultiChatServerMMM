@@ -44,10 +44,27 @@ public class ServerWorker extends Thread {
                 handleConnect(input[1]);
             } else if ("SEND".equals(input[0])){
                 handleSend(input[1],input[2]);
+            } else if ("CLOSE".equalsIgnoreCase(input[0])){
+                closeConnection();
             }
 
         }
 
+    }
+
+    private void closeConnection() throws IOException {
+        List<ServerWorker> serverWorkerList = server.getWorkerList();
+       server.removeWorker(this);
+
+        String msgAll = "";
+        for (ServerWorker serverWorker : serverWorkerList) {
+            if (serverWorker.getLogin() != null){
+                msgAll += serverWorker.getLogin() +",";
+            }
+            serverWorker.sendWhosisOnline();
+        }
+
+clientSocket.close(); //should return CLOSE#0 --> TODO: Exeption
     }
 
     private void handleSend(String sendTo, String text) throws IOException {
@@ -76,11 +93,11 @@ public class ServerWorker extends Thread {
             if (serverWorker.getLogin() != null){
                 msgAll += serverWorker.getLogin() +",";
             }
-            serverWorker.send();
+            serverWorker.sendWhosisOnline();
         }
     }
 
-    private void send() throws IOException {
+    private void sendWhosisOnline() throws IOException {
         List<ServerWorker> serverWorkerList = server.getWorkerList();
         String msgAll = "ONLINE#";
         //Sends online command to all other online clients
