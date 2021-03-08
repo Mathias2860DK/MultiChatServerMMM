@@ -46,17 +46,28 @@ public class ServerWorker extends Thread {
             } else if ("SEND".equals(input[0])) {
                 handleSend(input[1], input[2]);
             } else if ("CLOSE".equalsIgnoreCase(input[0])) {
-                closeConnection();
+                closeConnection(0);
+            }else{
+                closeConnection(1);
             }
 
         }
 
     }
 
-    private void closeConnection() throws IOException {
+    private void closeConnection(int errorNumber) throws IOException {
         List<ServerWorker> serverWorkerList = server.getWorkerList();
         server.removeWorker(this);
 
+        if(errorNumber == 0){
+            outputStream.write("Error 0) Normal close, ".getBytes());
+        }
+        if(errorNumber == 1){
+            outputStream.write("Error 1) Illegal input was received, ".getBytes());
+        }
+        if(errorNumber == 2){
+            outputStream.write("Error 2) User not found, ".getBytes());
+        }
         String msgAll = "";
         for (ServerWorker serverWorker : serverWorkerList) {
             if (serverWorker.getLogin() != null) {
@@ -69,16 +80,16 @@ public class ServerWorker extends Thread {
     }
 
     private void handleSend(String sendTo, String text) throws IOException {
-        String error = "Brugeren findes ikke \n";
+        String error = "Brugeren findes ikke";
         List<ServerWorker> serverWorkerList = server.getWorkerList();
-        String [] input = sendTo.split(",");
+        String[] input = sendTo.split(",");
         for (ServerWorker serverWorker : serverWorkerList) {
-            if (sendTo.equals("*")){
+            if (sendTo.equals("*")) {
                 String sendMsg = "MESSAGE#" + login + "#" + text + "\n";
                 serverWorker.sendToClients(sendMsg);
             }
             for (int i = 0; i < input.length; i++) {
-                if (input[i].contains(serverWorker.getLogin())){
+                if (input[i].contains(serverWorker.getLogin())) {
                     String sendMsg = "MESSAGE#" + login + "#" + text + "\n";
                     serverWorker.sendToClients(sendMsg);
                     error = "";
@@ -86,9 +97,11 @@ public class ServerWorker extends Thread {
 
             }
         }
-        outputStream.write(error.getBytes());
+       // outputStream.write(error.getBytes());
+        if(error.equals("Brugeren findes ikke")){
+            closeConnection(2);
+        }
     }
-
 
 
 
@@ -98,11 +111,11 @@ public class ServerWorker extends Thread {
 
     private void handleConnect(String userName) throws IOException {
         this.login = userName;
-    List<ServerWorker> serverWorkerList = server.getWorkerList();
-    String msgAll ="";
+        List<ServerWorker> serverWorkerList = server.getWorkerList();
+        String msgAll = "";
         for (ServerWorker serverWorker : serverWorkerList) {
-            if (serverWorker.getLogin() != null){
-                msgAll += serverWorker.getLogin() +",";
+            if (serverWorker.getLogin() != null) {
+                msgAll += serverWorker.getLogin() + ",";
             }
             serverWorker.sendWhosisOnline();
         }
@@ -112,9 +125,9 @@ public class ServerWorker extends Thread {
         List<ServerWorker> serverWorkerList = server.getWorkerList();
         String msgAll = "ONLINE#";
         //Sends online command to all other online clients
-        for (ServerWorker serverWorker: serverWorkerList) {
-            if (serverWorker.getLogin() != null){
-                msgAll += serverWorker.getLogin() +",";
+        for (ServerWorker serverWorker : serverWorkerList) {
+            if (serverWorker.getLogin() != null) {
+                msgAll += serverWorker.getLogin() + ",";
             }
         }
         String finalMsg = msgAll + "\n";
