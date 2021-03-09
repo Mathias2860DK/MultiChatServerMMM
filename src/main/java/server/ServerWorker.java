@@ -87,6 +87,7 @@ public class ServerWorker extends Thread {
             if (sendTo.equals("*")) {
                 String sendMsg = "MESSAGE#" + login + "#" + text + "\n";
                 serverWorker.sendToClients(sendMsg);
+                error = "";
             }
             for (int i = 0; i < input.length; i++) {
                 if (input[i].contains(serverWorker.getLogin())) {
