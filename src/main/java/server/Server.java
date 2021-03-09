@@ -28,7 +28,7 @@ import java.util.List;
                     System.out.println("About to accept client connection...");
                     Socket clientSocket = serverSocket.accept();
                     System.out.println("Accepted connection from " + clientSocket);
-                    ServerWorker worker = new ServerWorker(this, clientSocket);
+                    ServerWorker worker = new ServerWorker(this, clientSocket,null);
                     workerList.add(worker);
                     worker.start();
                 }

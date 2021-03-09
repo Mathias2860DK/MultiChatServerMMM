@@ -15,6 +15,7 @@ public class ServerWorker extends Thread {
     private String login = null; //tænker vi skal bruge login og validerer brugeren. men behøves ikke instanitieres i konstruktøren
     private OutputStream outputStream;
     BlockingQueue<String> allMsg;
+    Dispatcherr dispatcherr;
 
     public BlockingQueue<String> getAllMsg() {
         return allMsg;
@@ -23,6 +24,12 @@ public class ServerWorker extends Thread {
     public ServerWorker(Server server, Socket clientSocket) {
         this.server = server;
         this.clientSocket = clientSocket;
+    }
+
+    public ServerWorker(Server server, Socket clientSocket, BlockingQueue<String> allMsg) {
+        this.server = server;
+        this.clientSocket = clientSocket;
+        this.allMsg = allMsg;
     }
 
     public String getLogin() {
@@ -125,6 +132,7 @@ public class ServerWorker extends Thread {
             }
             serverWorker.sendWhosisOnline();
         }
+        dispatcherr.add(userName); //bare for at tjekke om det virker.
     }
 
     private void sendWhosisOnline() throws IOException {
