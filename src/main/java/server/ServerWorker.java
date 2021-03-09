@@ -5,6 +5,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.BlockingQueue;
 
 
 public class ServerWorker extends Thread {
@@ -13,6 +14,11 @@ public class ServerWorker extends Thread {
     private final Server server;
     private String login = null; //tænker vi skal bruge login og validerer brugeren. men behøves ikke instanitieres i konstruktøren
     private OutputStream outputStream;
+    BlockingQueue<String> allMsg;
+
+    public BlockingQueue<String> getAllMsg() {
+        return allMsg;
+    }
 
     public ServerWorker(Server server, Socket clientSocket) {
         this.server = server;
