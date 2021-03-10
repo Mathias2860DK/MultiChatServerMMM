@@ -1,0 +1,4 @@
+mar. 10, 2021 1:03:03 PM server.ServerWorker closeConnection
+INFO: 
+mar. 10, 2021 1:03:03 PM server.ServerWorker closeConnection
+INFO: Error 0) Normal close, 

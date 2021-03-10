@@ -4,10 +4,13 @@ package server;
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 
 public class ServerWorker extends Thread {
-//nisse
+    //nisse
     private final Socket clientSocket;
     private final Server server;
     private String login = null; //tænker vi skal bruge login og validerer brugeren. men behøves ikke instanitieres i konstruktøren
@@ -46,7 +49,7 @@ public class ServerWorker extends Thread {
                 handleSend(input[1], input[2]);
             } else if ("CLOSE".equalsIgnoreCase(input[0])) {
                 closeConnection(0);
-            }else{
+            } else {
                 closeConnection(1);
             }
 
@@ -58,15 +61,6 @@ public class ServerWorker extends Thread {
         List<ServerWorker> serverWorkerList = server.getWorkerList();
         server.removeWorker(this);
 
-        if(errorNumber == 0){
-            outputStream.write("Error 0) Normal close, ".getBytes());
-        }
-        if(errorNumber == 1){
-            outputStream.write("Error 1) Illegal input was received, ".getBytes());
-        }
-        if(errorNumber == 2){
-            outputStream.write("Error 2) User not found, ".getBytes());
-        }
         String msgAll = "";
         for (ServerWorker serverWorker : serverWorkerList) {
             if (serverWorker.getLogin() != null) {
@@ -75,8 +69,41 @@ public class ServerWorker extends Thread {
             serverWorker.sendWhosisOnline();
         }
 
+        Logger logger = Logger.getLogger("MyLog");
+        FileHandler fh;
+
+        try {
+
+            // This block configure the logger with handler and formatter
+            fh = new FileHandler("src/main/java/server/MyLogFile.txt");
+            logger.addHandler(fh);
+            SimpleFormatter formatter = new SimpleFormatter();
+            fh.setFormatter(formatter);
+
+            // the following statement is used to log any messages
+            logger.info("");
+
+            if (errorNumber == 0) {
+                outputStream.write("Error 0) Normal close, ".getBytes());
+                logger.info("Error 0) Normal close, ");
+            }
+            if (errorNumber == 1) {
+                outputStream.write("Error 1) Illegal input was received, ".getBytes());
+                logger.info("Error 1) Illegal input was received, ");
+            }
+            if (errorNumber == 2) {
+                outputStream.write("Error 2) User not found, ".getBytes());
+                logger.info("Error 2) User not found, ");
+            }
+
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         clientSocket.close(); //should return CLOSE#0 --> TODO: Exeption
     }
+
 
     private void handleSend(String sendTo, String text) throws IOException {
         String error = "Brugeren findes ikke";
