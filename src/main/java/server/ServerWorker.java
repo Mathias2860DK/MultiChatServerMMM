@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 
 public class ServerWorker extends Thread {
-
+//nisse
     private final Socket clientSocket;
     private final Server server;
     private String login = null; //tænker vi skal bruge login og validerer brugeren. men behøves ikke instanitieres i konstruktøren
