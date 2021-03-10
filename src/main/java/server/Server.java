@@ -13,26 +13,13 @@ import java.util.concurrent.ConcurrentMap;
 
 public class Server {
     private final int serverPort;
-    Dispatcherr dispatcherr;
     BlockingQueue<String> allMsg = new ArrayBlockingQueue<>(250);
     OutputStream outputStream;
     ConcurrentHashMap<String, OutputStream> allNameOutputStream = new ConcurrentHashMap<>();
 
-    private ArrayList<ServerWorker> workerList = new ArrayList<>(); //TODO: MABYE A HASHMAP!?
-
     public Server(int serverPort) {
         this.serverPort = serverPort;
     }
-
-    public Server(int serverPort, Dispatcherr dispatcherr) {
-        this.serverPort = serverPort;
-        this.dispatcherr = dispatcherr;
-    }
-
-    public List<ServerWorker> getWorkerList() {
-        return workerList;
-    }
-
 
     public void runProgram() {
         try {
@@ -48,35 +35,12 @@ public class Server {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                 String input = reader.readLine(); //CONNECT#kurt
                 String[] inputArray = input.split("#");
-                allNameOutputStream.put(inputArray[1], outputStream);
-                handleConnect(allNameOutputStream);
-                //allNameOutputStream.put("kurt",outputStream);
-                //ServerWorker worker = new ServerWorker(this, clientSocket, allMsg);
-                ServerWorker worker1 = new ServerWorker(inputArray[1] ,allMsg, outputStream,reader);
-                //workerList.add(worker);
-                worker1.start();
+                allNameOutputStream.put(inputArray[1], outputStream);//inputArray[1] = name
+                ServerWorker worker = new ServerWorker(inputArray[1] ,allMsg, outputStream,reader);
+                worker.start();
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void removeWorker(ServerWorker serverWorker) {
-        workerList.remove(serverWorker);
-    }
-
-    public void handleConnect(ConcurrentHashMap allNameOutputStream) throws IOException, InterruptedException {
-       // allNameOutputStream.
-
-    /*    List<ServerWorker> serverWorkerList = server.getWorkerList();
-        String msgAll = "";
-        for (ServerWorker serverWorker : serverWorkerList) {
-            if (serverWorker.getLogin() != null) {
-                msgAll += serverWorker.getLogin() + ",";
-            }
-            serverWorker.sendWhosisOnline();
-        }
-        dispatcherr.add(userName); //bare for at tjekke om det virker.
-    }*/
     }
 }
