@@ -10,31 +10,24 @@ import java.util.concurrent.BlockingQueue;
 
 public class ServerWorker extends Thread {
 
-    private final Socket clientSocket;
-    private final Server server;
+    //private final Socket clientSocket;
+    //private final Server server;
     private String login = null; //tænker vi skal bruge login og validerer brugeren. men behøves ikke instanitieres i konstruktøren
     private OutputStream outputStream;
     BlockingQueue<String> allMsg;
+    BufferedReader reader;
+    String[] input;
+
     Dispatcherr dispatcherr;
+    String name;
 
-    public BlockingQueue<String> getAllMsg() {
-        return allMsg;
-    }
-
-    public ServerWorker(Server server, Socket clientSocket) {
-        this.server = server;
-        this.clientSocket = clientSocket;
-    }
-
-    public ServerWorker(Server server, Socket clientSocket, BlockingQueue<String> allMsg) {
-        this.server = server;
-        this.clientSocket = clientSocket;
+    public ServerWorker(String name, BlockingQueue<String> allMsg, OutputStream outputStream, BufferedReader reader) {
         this.allMsg = allMsg;
+        this.name = name;
+        this.outputStream = outputStream;
+        this.reader = reader;
     }
 
-    public String getLogin() {
-        return login;
-    }
 
     @Override
     public void run() {
@@ -46,14 +39,13 @@ public class ServerWorker extends Thread {
     }
 
     private void handleClientSocket() throws IOException, InterruptedException {
-        InputStream inputStream = clientSocket.getInputStream();
-        this.outputStream = clientSocket.getOutputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-
         String line;
+        boolean go = true;
         //TODO: you must be connected to acces commands.
-        while ((line = reader.readLine()) != null) {
-            String[] input = line.split("#");
+        while (go) {
+            line = reader.readLine();
+            input = line.split("#");
+            System.out.println("test");
             if ("CONNECT".equals(input[0])) {
                 handleConnect(input[1]);
             } else if ("SEND".equals(input[0])) {
@@ -69,7 +61,7 @@ public class ServerWorker extends Thread {
     }
 
     private void closeConnection(int errorNumber) throws IOException {
-        List<ServerWorker> serverWorkerList = server.getWorkerList();
+  /*      List<ServerWorker> serverWorkerList = server.getWorkerList();
         server.removeWorker(this);
 
         if(errorNumber == 0){
@@ -89,33 +81,16 @@ public class ServerWorker extends Thread {
             serverWorker.sendWhosisOnline();
         }
 
-        clientSocket.close(); //should return CLOSE#0 --> TODO: Exeption
+        clientSocket.close(); //should return CLOSE#0 --> TODO: Exeption*/
     }
 
     private void handleSend(String sendTo, String text) throws IOException {
-        String error = "Brugeren findes ikke";
-        List<ServerWorker> serverWorkerList = server.getWorkerList();
-        String[] input = sendTo.split(",");
-        for (ServerWorker serverWorker : serverWorkerList) {
-            if (sendTo.equals("*")) {
-                String sendMsg = "MESSAGE#" + login + "#" + text + "\n";
-                allMsg.add(sendMsg);
-                serverWorker.sendToClients(sendMsg);
-            }
-            for (int i = 0; i < input.length; i++) {
-                if (input[i].contains(serverWorker.getLogin())) {
-                    String sendMsg = "MESSAGE#" + login + "#" + text + "\n";
-                    serverWorker.sendToClients(sendMsg);
-                    error = "";
-                }
-
-            }
+       String outputString = input[0] + "#" + name + "," + input[1] + "#" + input[2];
+       allMsg.add(outputString);
         }
        // outputStream.write(error.getBytes());
-        if(error.equals("Brugeren findes ikke")){
-            closeConnection(2);
-        }
-    }
+
+
 
 
 
@@ -124,7 +99,7 @@ public class ServerWorker extends Thread {
     }
 
     private void handleConnect(String userName) throws IOException, InterruptedException {
-        this.login = userName;
+    /*    this.login = userName;
         List<ServerWorker> serverWorkerList = server.getWorkerList();
         String msgAll = "";
         for (ServerWorker serverWorker : serverWorkerList) {
@@ -133,11 +108,11 @@ public class ServerWorker extends Thread {
             }
             serverWorker.sendWhosisOnline();
         }
-        dispatcherr.add(userName); //bare for at tjekke om det virker.
+        //dispatcherr.add(userName); //bare for at tjekke om det virker.*/
     }
 
     private void sendWhosisOnline() throws IOException {
-        List<ServerWorker> serverWorkerList = server.getWorkerList();
+  /*      List<ServerWorker> serverWorkerList = server.getWorkerList();
         String msgAll = "ONLINE#";
         //Sends online command to all other online clients
         for (ServerWorker serverWorker : serverWorkerList) {
@@ -148,5 +123,6 @@ public class ServerWorker extends Thread {
         String finalMsg = msgAll + "\n";
         outputStream.write(finalMsg.getBytes());
         //very handsome matia
-    }
+
+   */ }
 }
