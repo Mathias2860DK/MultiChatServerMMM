@@ -4,11 +4,11 @@
 #NO Spaces allowed on either side of the '='
 
 #SERVER_NAME below MUST mach the DIRECTORY created on your droplet in the /var folder
-SERVER_NAME="chat-server"
+SERVER_NAME="quizTB"
 
-DROPLET_URL="138.68.100.110"
+DROPLET_URL="167.71.40.117"
 # Change the root below to the non-root user you have setup:
-DROPLET_USER="root"
+DROPLET_USER="mathias"
 
 
 echo "##############################"
