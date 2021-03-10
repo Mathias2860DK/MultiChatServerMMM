@@ -14,7 +14,6 @@ public class Dispatcherr extends Thread {
         this.allNameOutPutStream = allNameOutputStream;
     }
 
-
     @Override
     public void run() {
         try {
@@ -33,6 +32,10 @@ public class Dispatcherr extends Thread {
             String outputMsg = "MESSAGE#" + modtager[0] + "#" + inputArray[2];
             findClientWriterByName(modtager[1]).write(outputMsg.getBytes());
         }
+    }
+
+    private void whoIsOnline(){
+
     }
 
     private OutputStream findClientWriterByName(String name){
