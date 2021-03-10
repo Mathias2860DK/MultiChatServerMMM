@@ -12,8 +12,7 @@ public class ChatServer {
         String logFile = "log.txt";  //Do we need this
         int port = 8818;
         Server server = new Server(port);
-        Dispatcherr dispatcherr = new Dispatcherr();
-        dispatcherr.start();
-        server.start();
+        server.runProgram();
+
     }
 }

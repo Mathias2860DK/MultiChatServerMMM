@@ -40,12 +40,12 @@ public class ServerWorker extends Thread {
     public void run() {
         try {
             handleClientSocket();
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    private void handleClientSocket() throws IOException {
+    private void handleClientSocket() throws IOException, InterruptedException {
         InputStream inputStream = clientSocket.getInputStream();
         this.outputStream = clientSocket.getOutputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -99,6 +99,7 @@ public class ServerWorker extends Thread {
         for (ServerWorker serverWorker : serverWorkerList) {
             if (sendTo.equals("*")) {
                 String sendMsg = "MESSAGE#" + login + "#" + text + "\n";
+                allMsg.add(sendMsg);
                 serverWorker.sendToClients(sendMsg);
             }
             for (int i = 0; i < input.length; i++) {
@@ -122,7 +123,7 @@ public class ServerWorker extends Thread {
         outputStream.write(msg.getBytes());
     }
 
-    private void handleConnect(String userName) throws IOException {
+    private void handleConnect(String userName) throws IOException, InterruptedException {
         this.login = userName;
         List<ServerWorker> serverWorkerList = server.getWorkerList();
         String msgAll = "";

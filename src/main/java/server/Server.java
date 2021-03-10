@@ -1,14 +1,22 @@
 package server;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
-    public class Server extends Thread {
+public class Server {
         private final int serverPort;
+        Dispatcherr dispatcherr;
+        BlockingQueue<String> allMsg = new ArrayBlockingQueue<>(250);
+        OutputStream outputStream;
+        ConcurrentHashMap <String,OutputStream> allNameOutputStream = new ConcurrentHashMap<>();
 
         private ArrayList<ServerWorker> workerList = new ArrayList<>(); //TODO: MABYE A HASHMAP!?
 
@@ -16,23 +24,36 @@ import java.util.List;
             this.serverPort = serverPort;
         }
 
+        public Server(int serverPort, Dispatcherr dispatcherr) {
+            this.serverPort = serverPort;
+            this.dispatcherr = dispatcherr;
+        }
+
         public List<ServerWorker> getWorkerList() {
             return workerList;
         }
 
-        @Override
-        public void run() {
+
+        public void runProgram() {
             try {
                 ServerSocket serverSocket = new ServerSocket(serverPort);
+                Dispatcherr dispatcherr = new Dispatcherr(allMsg, allNameOutputStream);
                 while(true) {
                     System.out.println("About to accept client connection...");
                     Socket clientSocket = serverSocket.accept();
                     System.out.println("Accepted connection from " + clientSocket);
-                    ServerWorker worker = new ServerWorker(this, clientSocket,null);
+                    this.outputStream = clientSocket.getOutputStream();
+                    InputStream inputStream = clientSocket.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    String input = reader.readLine(); //CONNECT#kurt
+                    allNameOutputStream.put(input,outputStream);
+                    handleConnect(allNameOutputStream);
+                    //allNameOutputStream.put("kurt",outputStream);
+                    ServerWorker worker = new ServerWorker(this, clientSocket,allMsg);
                     workerList.add(worker);
                     worker.start();
                 }
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -40,4 +61,16 @@ import java.util.List;
         public void removeWorker(ServerWorker serverWorker) {
             workerList.remove(serverWorker);
         }
+
+    public void handleConnect(ConcurrentHashMap allNameOutputStream) throws IOException, InterruptedException {
+        List<ServerWorker> serverWorkerList = server.getWorkerList();
+        String msgAll = "";
+        for (ServerWorker serverWorker : serverWorkerList) {
+            if (serverWorker.getLogin() != null) {
+                msgAll += serverWorker.getLogin() + ",";
+            }
+            serverWorker.sendWhosisOnline();
+        }
+        dispatcherr.add(userName); //bare for at tjekke om det virker.
+    }
     }
