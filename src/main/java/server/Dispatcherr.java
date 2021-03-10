@@ -34,6 +34,10 @@ public class Dispatcherr extends Thread {
         }
     }
 
+    private void handleConnect(){
+
+    }
+
     private void whoIsOnline(){
 
     }

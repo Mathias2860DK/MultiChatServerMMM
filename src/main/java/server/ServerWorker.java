@@ -63,7 +63,8 @@ public class ServerWorker extends Thread {
         }
 
     private void handleConnect() {
-
+String outputString = input[0] + "#" + input[1];
+allMsg.add(outputString);
     }
 
 }
