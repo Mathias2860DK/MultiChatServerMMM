@@ -44,7 +44,7 @@ public class ServerWorker extends Thread {
             System.out.println("handleClientSocket while loop/ kommer vi ind her");
             input = line.split("#");
             if ("CONNECT".equals(input[0])) {
-                handleConnect();
+                //handleConnect();
             } else if ("SEND".equals(input[0])) {
                 handleSend();
             } else if ("CLOSE".equalsIgnoreCase(input[0])) {
@@ -63,15 +63,6 @@ public class ServerWorker extends Thread {
     private void handleSend() throws IOException {
        String outputString = input[0] + "#" + name + "," + input[1] + "#" + input[2];
        //SEND#mat2,mat#hej mat
-        System.out.println("test handlesend" + outputString);
        allMsg.add(outputString);
         }
-
-    private void handleConnect() {
-String outputString = "dis"+ "#" + input[0] + "#" + input[1];
-allMsg.add(outputString);
-    }
-
-
-
 }

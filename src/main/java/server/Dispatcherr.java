@@ -19,33 +19,31 @@ public class Dispatcherr extends Thread {
         while (true) {
             try {
                 String msgInQueue = allMsg.take();
-                //handleDispatcher(msgInQueue);
                 handleMsg(msgInQueue);
-
             } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void handleDispatcher(String msgInQueue) throws IOException {
-        //CONNECT#kurt
-        String[] splitString = msgInQueue.split("#");
-            if (splitString[0].contains("SEND")) {
-                handleMsg(msgInQueue);
-            } else if (splitString[0].contains("dis")) {
-                handleConnect(splitString[1]);
-            }
-    }
 
     private void send(String msgInQueue) throws IOException {
         String[]inputArray = msgInQueue.split("#");
         String[]modtager = inputArray[1].split(",");
         String outputMsg = "MESSAGE#" + modtager[0] + "#" + inputArray[2] + "\n";
 
-        for (int i = 1; i < modtager.length; i++) {
-            findClientWriterByName(modtager[i]).write(outputMsg.getBytes());
+        if (inputArray[1].contains("*")){
+            for (String key : allNameOutputStream.keySet()) {
+                allNameOutputStream.get(key).write(outputMsg.getBytes());
+            }
+        } else {
+            for (int i = 1; i < modtager.length; i++) {
+                findClientWriterByName(modtager[i]).write(outputMsg.getBytes());
+            }
+
         }
+
+
 
     }
 
@@ -56,7 +54,6 @@ public class Dispatcherr extends Thread {
         //String[]modtager = inputArray[1].split(",");
         if (msgInQueue.contains("ONLINE")){
             whoIsOnline();
-
         }else if (msgInQueue.contains("SEND")){
             send(msgInQueue);
         } else if(msgInQueue.contains("CLOSE")){
@@ -75,10 +72,6 @@ public class Dispatcherr extends Thread {
 whoIsOnline();
     }
 
-    private void handleConnect(String msgInQueue) throws IOException {
-        System.out.println("test");
-    whoIsOnline();
-    }
 
     private void whoIsOnline() throws IOException {
         String outputMsg = "";
