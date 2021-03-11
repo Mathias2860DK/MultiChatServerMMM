@@ -49,7 +49,6 @@ public class Dispatcherr extends Thread {
 
     private void handleMsg(String msgInQueue) throws IOException {
         //SEND#mat#hej mat
-        System.out.println("handlemsg");
         String[]inputArray = msgInQueue.split("#");
         //String[]modtager = inputArray[1].split(",");
         if (msgInQueue.contains("ONLINE")){
@@ -65,7 +64,6 @@ public class Dispatcherr extends Thread {
     }
 
     private void closeConnection(String msgInQueue) throws IOException {
-        System.out.println("kommer vi ind i close con");
         String[] splitArray = msgInQueue.split("#");
         String userWhoWantsToCloseConnection = splitArray[1];
         allNameOutputStream.remove(userWhoWantsToCloseConnection);
