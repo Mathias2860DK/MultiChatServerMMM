@@ -17,6 +17,10 @@ public class Server {
     OutputStream outputStream;
     ConcurrentHashMap<String, OutputStream> allNameOutputStream = new ConcurrentHashMap<>();
 
+    public ConcurrentHashMap<String, OutputStream> getAllNameOutputStream() {
+        return allNameOutputStream;
+    }
+
     public Server(int serverPort) {
         this.serverPort = serverPort;
     }
@@ -36,11 +40,28 @@ public class Server {
                 String input = reader.readLine(); //CONNECT#kurt
                 String[] inputArray = input.split("#");
                 allNameOutputStream.put(inputArray[1], outputStream);//inputArray[1] = name
+                //whoIsOnline();
                 ServerWorker worker = new ServerWorker(inputArray[1] ,allMsg, outputStream,reader);
+                allMsg.add("ONLINE#" + inputArray[1]);
                 worker.start();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    private void whoIsOnline() throws IOException {
+        String outputMsg= "";
+        String finalOutputMsg ="";
+        ConcurrentHashMap<String, OutputStream> allNameOutputStream = getAllNameOutputStream();
+        for (String key : allNameOutputStream.keySet()) {
+            System.out.println(key + " : " + allNameOutputStream.get(key));
+            //ONLINE#musti,mark
+            outputMsg += key + ",";
+            finalOutputMsg = "ONLINE#" + outputMsg + "\n";
+            allNameOutputStream.get(key).write(finalOutputMsg.getBytes());
+        }
+       // allMsg.add(finalOutputMsg);
+    }
 }
+

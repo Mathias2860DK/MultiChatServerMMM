@@ -33,12 +33,15 @@ public class ServerWorker extends Thread {
         }
     }
 
+
     private void handleClientSocket() throws IOException, InterruptedException {
         String line;
         boolean go = true;
         //TODO: you must be connected to acces commands.
+
         while (go) {
             line = reader.readLine();
+            System.out.println("handleClientSocket while loop/ kommer vi ind her");
             input = line.split("#");
             if ("CONNECT".equals(input[0])) {
                 handleConnect();
@@ -49,21 +52,21 @@ public class ServerWorker extends Thread {
             }else{
                 closeConnection();
             }
-
         }
-
     }
 
     private void closeConnection() {
     }
 
     private void handleSend() throws IOException {
-       String outputString = input[0] + "#" + name + "," + input[1] + "#" + input[2];
+       String outputString = input[0] + "#" + input[1] + "#" + input[2];
+       //SEND#mat#hej mat
+        System.out.println("test handlesend" + outputString);
        allMsg.add(outputString);
         }
 
     private void handleConnect() {
-String outputString = input[0] + "#" + input[1];
+String outputString = "dis"+ "#" + input[0] + "#" + input[1];
 allMsg.add(outputString);
     }
 
