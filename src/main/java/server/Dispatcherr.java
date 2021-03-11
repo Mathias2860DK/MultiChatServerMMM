@@ -51,10 +51,12 @@ public class Dispatcherr extends Thread {
 
     private void handleMsg(String msgInQueue) throws IOException {
         //SEND#mat#hej mat
+        System.out.println("handlemsg");
         String[]inputArray = msgInQueue.split("#");
         //String[]modtager = inputArray[1].split(",");
         if (msgInQueue.contains("ONLINE")){
             whoIsOnline();
+
         }else if (msgInQueue.contains("SEND")){
             send(msgInQueue);
         }

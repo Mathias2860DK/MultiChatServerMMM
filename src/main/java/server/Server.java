@@ -36,7 +36,9 @@ public class Server {
                 System.out.println("Accepted connection from " + clientSocket);
                 this.outputStream = clientSocket.getOutputStream();
                 InputStream inputStream = clientSocket.getInputStream();
+
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                outputStream.write("Your turn to connect.do it fast!!!!!!!!!\n".getBytes());
                 String input = reader.readLine(); //CONNECT#kurt
                 String[] inputArray = input.split("#");
                 allNameOutputStream.put(inputArray[1], outputStream);//inputArray[1] = name

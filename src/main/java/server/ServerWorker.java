@@ -56,6 +56,8 @@ public class ServerWorker extends Thread {
     }
 
     private void closeConnection() {
+        String outputString = input[0] + "#" + "0";
+        allMsg.add(outputString);
     }
 
     private void handleSend() throws IOException {
@@ -69,5 +71,7 @@ public class ServerWorker extends Thread {
 String outputString = "dis"+ "#" + input[0] + "#" + input[1];
 allMsg.add(outputString);
     }
+
+
 
 }
