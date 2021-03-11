@@ -1,6 +1,6 @@
 ## Chat Server
 
-How does the program work? 
+How does the program work? OBS: The refactored coded is in the branch refactor
 
 Commands from clients to the server:
 
