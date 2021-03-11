@@ -41,7 +41,7 @@ public class Dispatcherr extends Thread {
     private void send(String msgInQueue) throws IOException {
         String[]inputArray = msgInQueue.split("#");
         String[]modtager = inputArray[1].split(",");
-        String outputMsg = "MESSAGE#" + modtager[0] + "#" + inputArray[2];
+        String outputMsg = "MESSAGE#" + modtager[0] + "#" + inputArray[2] + "\n";
 
         for (int i = 1; i < modtager.length; i++) {
             findClientWriterByName(modtager[i]).write(outputMsg.getBytes());
@@ -59,10 +59,20 @@ public class Dispatcherr extends Thread {
 
         }else if (msgInQueue.contains("SEND")){
             send(msgInQueue);
+        } else if(msgInQueue.contains("CLOSE")){
+            closeConnection(msgInQueue);
         }
         else {
 
         }
+    }
+
+    private void closeConnection(String msgInQueue) throws IOException {
+        System.out.println("kommer vi ind i close con");
+        String[] splitArray = msgInQueue.split("#");
+        String userWhoWantsToCloseConnection = splitArray[1];
+        allNameOutputStream.remove(userWhoWantsToCloseConnection);
+whoIsOnline();
     }
 
     private void handleConnect(String msgInQueue) throws IOException {

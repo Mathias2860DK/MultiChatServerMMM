@@ -56,7 +56,7 @@ public class ServerWorker extends Thread {
     }
 
     private void closeConnection() {
-        String outputString = input[0] + "#" + "0";
+        String outputString = input[0] + "#" + name;
         allMsg.add(outputString);
     }
 
