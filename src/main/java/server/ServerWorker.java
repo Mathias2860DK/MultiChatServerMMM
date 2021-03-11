@@ -59,8 +59,8 @@ public class ServerWorker extends Thread {
     }
 
     private void handleSend() throws IOException {
-       String outputString = input[0] + "#" + input[1] + "#" + input[2];
-       //SEND#mat#hej mat
+       String outputString = input[0] + "#" + name + "," + input[1] + "#" + input[2];
+       //SEND#mat2,mat#hej mat
         System.out.println("test handlesend" + outputString);
        allMsg.add(outputString);
         }
